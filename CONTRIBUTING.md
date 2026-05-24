@@ -4,7 +4,7 @@ Thank you for improving shared Twilic organization files.
 
 ## Scope
 
-This repository hosts organization-wide community assets such as GitHub profile configuration under `profile/`.
+This repository hosts organization-wide community assets such as GitHub profile configuration under `profile/`, default policy documents (`SECURITY.md`, `CODE_OF_CONDUCT.md`, `SUPPORT.md`), and shared templates under `templates/`.
 
 ## Commit Messages
 

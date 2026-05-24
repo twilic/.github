@@ -1,0 +1,19 @@
+# Copy to .github/dependabot.yml in each repository and remove unused ecosystems.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # Include when the repository has a root Cargo.toml (or Cargo workspace at /).
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+
+  # Include when the repository has a root package.json.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
