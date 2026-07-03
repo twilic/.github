@@ -42,6 +42,7 @@ jobs:
           sparse-checkout: semgrep
 
       - name: Run Semgrep
+        shell: bash
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         run: |
