@@ -1,0 +1,77 @@
+name: Semgrep (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      profile:
+        description: Ruleset profile name (js, python, go, rust, terraform, default, etc.)
+        required: false
+        type: string
+        default: default
+      fail_on_findings:
+        description: Fail the job when Semgrep reports ERROR-level findings
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      SEMGREP_APP_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    if: github.actor != 'dependabot[bot]'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Checkout org Semgrep config
+        uses: actions/checkout@v7
+        with:
+          repository: twilic/.github
+          path: .semgrep-config
+          sparse-checkout: semgrep
+
+      - name: Run Semgrep
+        env:
+          SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          PROFILE="${{ inputs.profile }}"
+          PROFILE_FILE=".semgrep-config/semgrep/profiles/${PROFILE}.txt"
+          if [ ! -f "$PROFILE_FILE" ]; then
+            echo "Unknown Semgrep profile: ${PROFILE}" >&2
+            exit 1
+          fi
+
+          export SEMGREP_RULES="$(cat "$PROFILE_FILE")"
+          IGNORE_FILE=".semgrep-config/semgrep/.semgrepignore"
+
+          BASELINE_ARGS=""
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASELINE_ARGS="--baseline-commit ${{ github.event.pull_request.base.sha }}"
+          fi
+
+          ERROR_ARGS=""
+          if [ "${{ inputs.fail_on_findings }}" = "true" ]; then
+            ERROR_ARGS="--error"
+          fi
+
+          if [ -n "${SEMGREP_APP_TOKEN:-}" ]; then
+            semgrep ci
+          else
+            semgrep scan \
+              ${BASELINE_ARGS} \
+              ${ERROR_ARGS} \
+              --semgrepignore-file "${IGNORE_FILE}"
+          fi

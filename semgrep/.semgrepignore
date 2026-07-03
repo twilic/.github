@@ -1,0 +1,69 @@
+# Dependencies and package managers
+node_modules/
+vendor/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+target/
+*.egg-info/
+__pycache__/
+.mypy_cache/
+.ruff_cache/
+.gradle/
+bin/
+obj/
+
+# Lock files and generated artifacts
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+Cargo.lock
+Gemfile.lock
+composer.lock
+uv.lock
+poetry.lock
+go.sum
+*.lock
+
+# Infrastructure caches
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Test fixtures and snapshots (adjust per-repo if needed)
+**/__snapshots__/
+**/testdata/generated/
+
+# Documentation site build output
+.vitepress/dist/
+.next/
+.nuxt/
+
+# IDE and tooling
+.idea/
+.vscode/
+*.swp
+
+# Media and binary assets
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico
+*.svg
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.mp4
+*.mp3
+*.pdf
+
+# Minified and bundled files
+*.min.js
+*.min.css
+*.bundle.js
