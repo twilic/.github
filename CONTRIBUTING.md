@@ -76,16 +76,15 @@ To exclude paths globally, add patterns to `semgrep/.semgrepignore`.
 
 ### Local execution
 
-Install Semgrep locally ([installation guide](https://semgrep.dev/docs/getting-started/)), then from any repository root:
+Install Semgrep locally ([installation guide](https://semgrep.dev/docs/getting-started/)), then from any repository root copy the shared ignore file and load a profile:
 
 ```bash
-# Auto-detect languages and run security rules
-semgrep scan --config auto --config p/security-audit
-
-# Match a specific profile (example: python)
-export SEMGREP_RULES="$(cat path/to/twilic/.github/semgrep/profiles/python.txt)"
+cp path/to/twilic/.github/semgrep/.semgrepignore .semgrepignore
+export SEMGREP_RULES="$(tr '\n' ' ' < path/to/twilic/.github/semgrep/profiles/python.txt | xargs)"
 semgrep scan --error
 ```
+
+Semgrep reads `.semgrepignore` from the project root automatically. There is no public `--semgrepignore-file` CLI flag.
 
 Use `--baseline-commit <sha>` to scan only changes since a commit (similar to CI on pull requests).
 

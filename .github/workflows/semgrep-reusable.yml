@@ -54,24 +54,18 @@ jobs:
             exit 1
           fi
 
-          export SEMGREP_RULES="$(cat "$PROFILE_FILE")"
-          IGNORE_FILE=".semgrep-config/semgrep/.semgrepignore"
-
-          BASELINE_ARGS=""
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASELINE_ARGS="--baseline-commit ${{ github.event.pull_request.base.sha }}"
-          fi
-
-          ERROR_ARGS=""
-          if [ "${{ inputs.fail_on_findings }}" = "true" ]; then
-            ERROR_ARGS="--error"
-          fi
+          cp .semgrep-config/semgrep/.semgrepignore .semgrepignore
+          export SEMGREP_RULES="$(tr '\n' ' ' < "$PROFILE_FILE" | xargs)"
 
           if [ -n "${SEMGREP_APP_TOKEN:-}" ]; then
             semgrep ci
           else
-            semgrep scan \
-              ${BASELINE_ARGS} \
-              ${ERROR_ARGS} \
-              --semgrepignore-file "${IGNORE_FILE}"
+            args=(scan)
+            if [ "${{ github.event_name }}" = "pull_request" ]; then
+              args+=(--baseline-commit "${{ github.event.pull_request.base.sha }}")
+            fi
+            if [ "${{ inputs.fail_on_findings }}" = "true" ]; then
+              args+=(--error)
+            fi
+            semgrep "${args[@]}"
           fi
