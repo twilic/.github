@@ -29,40 +29,63 @@ Examples:
 
 Run `pnpm install` once to enable local commit-message checks via Husky. Pull requests are also checked in CI so every commit in the branch follows the same rules.
 
+## Runtime label sync (reusable)
+
+Monorepo repositories that ask contributors to pick affected runtimes via an `Affected runtime(s)` field can sync those selections onto issue and pull request labels.
+
+| Path | Purpose |
+| --- | --- |
+| `.github/workflows/sync-runtime-labels-reusable.yml` | Reusable workflow invoked by each repository |
+
+Each application repository adds a thin caller workflow that references `twilic/.github/.github/workflows/sync-runtime-labels-reusable.yml@main`.
+
+Supported body formats:
+
+- Issue forms: multi-select `dropdown` (`multiple: true`), rendered as selected values
+- Pull requests: markdown checklist under `Affected runtime(s)`
+
+Behavior:
+
+- No `Affected runtime(s)` section → no-op
+- Section present but empty / `_No response_` / no checkbox items → no-op
+- Selected values map to labels (`rust`, `go`, `shared`, …); missing labels are created
+- Exactly one value remains and is selected → that value is adopted
+- Deselected managed runtime labels are removed; other labels are left alone
+
 ## Semgrep (organization-wide SAST)
 
 Twilic repositories run [Semgrep](https://semgrep.dev/) on pull requests via a reusable workflow defined in this repository.
 
 ### Layout
 
-| Path                                     | Purpose                                                                |
-| ---------------------------------------- | ---------------------------------------------------------------------- |
-| `.github/workflows/semgrep-reusable.yml` | Reusable workflow invoked by each repository                           |
-| `semgrep/.semgrepignore`                 | Shared ignore patterns (build outputs, lock files, etc.)               |
-| `semgrep/profiles/*.txt`                 | Language-specific ruleset profiles (space-separated registry rulesets) |
+| Path | Purpose |
+| --- | --- |
+| `.github/workflows/semgrep-reusable.yml` | Reusable workflow invoked by each repository |
+| `semgrep/.semgrepignore` | Shared ignore patterns (build outputs, lock files, etc.) |
+| `semgrep/profiles/*.txt` | Language-specific ruleset profiles (space-separated registry rulesets) |
 
 Each application repository adds a thin caller workflow at `.github/workflows/semgrep.yml` that references `twilic/.github/.github/workflows/semgrep-reusable.yml@main` and sets the appropriate `profile` input.
 
 ### Available profiles
 
-| Profile     | Rulesets                                                      | Typical repositories               |
-| ----------- | ------------------------------------------------------------- | ---------------------------------- |
-| `js`        | javascript, typescript, nodejs, security-audit, owasp-top-ten | axios, cli, express, website, etc. |
-| `js-rust`   | javascript, typescript, rust, security-audit                  | twilic-js                          |
-| `python`    | python, security-audit                                        | twilic-python                      |
-| `go`        | golang, security-audit                                        | twilic-go                          |
-| `rust`      | rust, security-audit                                          | twilic-rust                        |
-| `java`      | java, security-audit                                          | twilic-java                        |
-| `kotlin`    | kotlin, java, security-audit                                  | twilic-kotlin                      |
-| `scala`     | scala, security-audit                                         | twilic-scala                       |
-| `php`       | php, security-audit                                           | twilic-php                         |
-| `ruby`      | ruby, security-audit                                          | twilic-ruby                        |
-| `c`         | c, security-audit                                             | twilic-c                           |
-| `cpp`       | cpp, security-audit                                           | twilic-cpp                         |
-| `csharp`    | csharp, security-audit                                        | twilic-csharp                      |
-| `swift`     | swift, security-audit                                         | twilic-swift                       |
-| `terraform` | terraform, security-audit                                     | cloudflare-infra                   |
-| `default`   | auto, security-audit                                          | dart, elixir, lua, r, zig          |
+| Profile | Rulesets | Typical repositories |
+| --- | --- | --- |
+| `js` | javascript, typescript, nodejs, security-audit, owasp-top-ten | axios, cli, express, website, etc. |
+| `js-rust` | javascript, typescript, rust, security-audit | twilic-js |
+| `python` | python, security-audit | twilic-python |
+| `go` | golang, security-audit | twilic-go |
+| `rust` | rust, security-audit | twilic-rust |
+| `java` | java, security-audit | twilic-java |
+| `kotlin` | kotlin, java, security-audit | twilic-kotlin |
+| `scala` | scala, security-audit | twilic-scala |
+| `php` | php, security-audit | twilic-php |
+| `ruby` | ruby, security-audit | twilic-ruby |
+| `c` | c, security-audit | twilic-c |
+| `cpp` | cpp, security-audit | twilic-cpp |
+| `csharp` | csharp, security-audit | twilic-csharp |
+| `swift` | swift, security-audit | twilic-swift |
+| `terraform` | terraform, security-audit | cloudflare-infra |
+| `default` | auto, security-audit | dart, elixir, lua, r, zig |
 
 ### Updating shared configuration
 
