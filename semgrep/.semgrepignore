@@ -1,7 +1,6 @@
 # Dependencies and package managers
 node_modules/
 vendor/
-.pnpm-store/
 
 # Build outputs
 dist/
@@ -18,7 +17,7 @@ obj/
 
 # Lock files and generated artifacts
 package-lock.json
-pnpm-lock.yaml
+bun.lock
 yarn.lock
 Cargo.lock
 Gemfile.lock

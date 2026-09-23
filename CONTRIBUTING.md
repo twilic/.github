@@ -27,7 +27,7 @@ Examples:
 - `docs: update organization profile README`
 - `chore: refresh community links`
 
-Run `pnpm install` once to enable local commit-message checks via Husky. Pull requests are also checked in CI so every commit in the branch follows the same rules.
+Run `bun install` once to enable local commit-message checks via Husky. Pull requests are also checked in CI so every commit in the branch follows the same rules.
 
 ## Runtime label sync (reusable)
 
