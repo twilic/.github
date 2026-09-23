@@ -1,4 +1,4 @@
-![Twilic](https://raw.githubusercontent.com/twilic/media-kit/main/social/github/org-readme.png)
+![Twilic](https://raw.githubusercontent.com/twilic/branding/main/headers/github.png)
 
 # Twilic
 
